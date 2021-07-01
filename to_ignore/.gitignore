@@ -4,3 +4,6 @@ try
 main
 *.txt
 *.pdf
+
+open_tests/
+testcase_generator/
