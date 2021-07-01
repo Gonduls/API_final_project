@@ -1,9 +1,2 @@
-
-tutorial.c
+/to_ignore
 OPEN
-main
-*.txt
-*.pdf
-
-open_tests/
-testcase_generator/
