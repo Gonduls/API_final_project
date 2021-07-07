@@ -41,6 +41,10 @@ int main(){
         if(strcmp(line, aggiungi) == 0){
             //dijkstra(grafo, line, D, i);
             input_matrix(grafo[0], line, D);
+            for(int j = 0; j< D; j++)
+                for(int k = 0; k< D-1; k++)
+                    printf("%u, ", grafo[j][k]);
+            a_capo
             i ++;
             continue;
         }
@@ -57,19 +61,16 @@ void input_matrix(unsigned *matrix, char* line, int dim){
     unsigned MAX_LINE_LEN = dim*(MAX_NUM_LEN + 1);
     char *token;
     for (i= 0; i < dim; i++){
-        if(fgets(line, MAX_LINE_LEN, stdin) != NULL){
 
-            token = strtok(line, ","); // non mi serve il primo numero di ogni riga: è la distanza dal nodo 0, inutile
+        if(fgets(line, MAX_LINE_LEN, stdin) != NULL){
+            token = strtok(line, ","); // non mi serve il primo numero di ogni riga: è la distanza verso il nodo 0, inutile
             j = 0;
-            row = i*dim;
-            while(token != NULL){
-    HI
+            row = i*(dim-1);
+            while(token != NULL && j<dim-1){
                 token = strtok(NULL, ",");
                 matrix[row + j] = atoi(token);
-                printf("%u, ", matrix[row + j]);
                 j++;
             }
-            a_capo;
         }
         else
             printf("errore 2\n");
