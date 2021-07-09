@@ -63,19 +63,19 @@ int main(){
         print_top(&heap);
         printf("\terrore\n");
     }
-    //doppio array[25];
-    //for (i = 0; i<25; i++){
-    //    array[i].posizione = i;
-    //    array[i].valore = i+1;
-    //}
-    //migliori boh;
-    //boh.array = array;
-    //boh.riempimento = 25;
-    //print_top(&boh);
-    //build_heap(array, 25, true);
-    //print_top(&boh);
-    //build_heap(array, 25, false);
-    //print_top(&boh);
+    doppio array[25];
+    for (i = 0; i<25; i++){
+        array[i].posizione = i;
+        array[i].valore = i;
+    }
+    migliori boh;
+    boh.array = array;
+    boh.riempimento = 20;
+    print_top(&boh);
+    build_heap(array, 25, true);
+    print_top(&boh);
+    build_heap(array, 25, false);
+    print_top(&boh);
     return 0;
 }
 
