@@ -15,14 +15,14 @@ typedef struct {
 typedef struct {
     doppio* array;
     unsigned riempimento;
-} migliori;
+} lista_sequenziale;
 
-void print_top(migliori* lista);
+void print_top(lista_sequenziale* lista);
 unsigned dijkstra(unsigned *matrix, char* line, int dim);
 void input_matrix(unsigned *matrix, char* line, int dim);
-void build_heap(doppio* array, unsigned dim, bool MAX);
-void max_heapify(doppio* array, unsigned position, unsigned dim);
-void min_heapify(doppio* array, unsigned position, unsigned dim);
+void build_heap(lista_sequenziale* lista, bool MAX);
+void max_heapify(lista_sequenziale* lista, unsigned position);
+void min_heapify(lista_sequenziale* lista, unsigned position);
 
 
 
@@ -39,43 +39,23 @@ int main(){
     char* aggiungi = "AggiungiGrafo\n", *topk = "TopK\n";
     unsigned i = 0;
     doppio best[K];
-    migliori heap;
+    lista_sequenziale heap;
     heap.array = best;
     heap.riempimento = 0;
 
     while(fgets(line, MAX_LINE_LEN, stdin) != NULL){
-        //printf("%s", line);
-        //printf("top: %d, aggiungi: %d\n", strcmp(line, topk), strcmp(line, aggiungi));
         if(strcmp(line, aggiungi) == 0){
-            //dijkstra(grafo, line, D, i);
             input_matrix(grafo[0], line, D);
-            //for(int j = 0; j< D; j++)
-            //    for(int k = 0; k< D-1; k++)
-            //        printf("%u, ", grafo[j][k]);
-            //capo
-            
+            //dijkstra(grafo, line, D, i);
             i ++;
             continue;
         }
         if(strcmp(line, topk) == 0){
+            print_top(&heap);
             continue;
         }
-        print_top(&heap);
         printf("\terrore\n");
     }
-    doppio array[25];
-    for (i = 0; i<25; i++){
-        array[i].posizione = i;
-        array[i].valore = i;
-    }
-    migliori boh;
-    boh.array = array;
-    boh.riempimento = 20;
-    print_top(&boh);
-    build_heap(array, 25, true);
-    print_top(&boh);
-    build_heap(array, 25, false);
-    print_top(&boh);
     return 0;
 }
 
@@ -101,7 +81,7 @@ void input_matrix(unsigned *matrix, char* line, int dim){
 }
 
 
-void print_top(migliori* lista){
+void print_top(lista_sequenziale* lista){
     unsigned i;
     if (lista->riempimento == 0){
         capo
@@ -114,58 +94,60 @@ void print_top(migliori* lista){
     capo
 }
 
-void build_heap(doppio* array, unsigned dim, bool MAX){
+void build_heap(lista_sequenziale* lista, bool MAX){
     unsigned i;
-    for(i = dim/2; i>0; i--){
+    for(i = lista->riempimento/2; i>0; i--){
         if(MAX)
-            max_heapify(array, i, dim);
+            max_heapify(lista, i);
         else
-            min_heapify(array, i, dim);
+            min_heapify(lista, i);
     }
 }
 
-void max_heapify(doppio* array, unsigned position, unsigned dim){
+void max_heapify(lista_sequenziale* lista, unsigned position){
+    // sorts by higher valore, if vaolres match then it prefers higher posiziones
     unsigned left, right, pos, max;
     doppio temp;
     left = 2*position - 1;
     right = 2*position;
     pos = position -1;
-    if(left < dim && (!array[pos].valore || array[pos].valore < array[left].valore || (array[pos].valore == array[left].valore && array[pos].posizione > array[left].posizione)))
+    if(left < lista->riempimento && (lista->array[pos].valore < lista->array[left].valore || (lista->array[pos].valore == lista->array[left].valore && lista->array[pos].posizione < lista->array[left].posizione)))
         max = left;
     else
         max = pos;
 
-    if(right < dim && (!array[max].valore || array[max].valore < array[right].valore || (array[max].valore == array[right].valore && array[max].posizione > array[right].posizione)))
+    if(right < lista->riempimento && (lista->array[max].valore < lista->array[right].valore || (lista->array[max].valore == lista->array[right].valore && lista->array[max].posizione < lista->array[right].posizione)))
         max = right;
     
     if(max != pos){
-        temp = array[max];
-        array[max] = array[pos];
-        array[pos] = temp;
-        max_heapify(array, max+1, dim);
+        temp = lista->array[max];
+        lista->array[max] = lista->array[pos];
+        lista->array[pos] = temp;
+        max_heapify(lista, max+1);
     }
     
 }
 
-void min_heapify(doppio* array, unsigned position, unsigned dim){
+void min_heapify(lista_sequenziale* lista, unsigned position){
+    // sorts by lower valore, if vaolres match then it prefers lower posiziones
     unsigned left, right, pos, min;
     doppio temp;
     left = 2*position - 1;
     right = 2*position;
     pos = position -1;
-    if(left < dim && array[left].valore && (!array[pos].valore || array[pos].valore > array[left].valore || (array[pos].valore == array[left].valore && array[pos].posizione > array[left].posizione)))
+    if(left < lista->riempimento && (lista->array[pos].valore > lista->array[left].valore || (lista->array[pos].valore == lista->array[left].valore && lista->array[pos].posizione > lista->array[left].posizione)))
         min = left;
     else
         min = pos;
 
-    if(right < dim && array[right].valore && (!array[min].valore || array[min].valore > array[right].valore || (array[min].valore == array[right].valore && array[min].posizione > array[right].posizione)))
+    if(right < lista->riempimento && (lista->array[min].valore > lista->array[right].valore || (lista->array[min].valore == lista->array[right].valore && lista->array[min].posizione > lista->array[right].posizione)))
         min = right;
     
     if(min != pos){
-        temp = array[min];
-        array[min] = array[pos];
-        array[pos] = temp;
-        min_heapify(array, min+1, dim);
+        temp = lista->array[min];
+        lista->array[min] = lista->array[pos];
+        lista->array[pos] = temp;
+        min_heapify(lista, min+1);
     }
     
 }
