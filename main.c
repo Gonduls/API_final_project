@@ -5,21 +5,25 @@
 
 #define MAX_NUM_LEN 10
 #define HI printf("hi\n");
-#define a_capo printf("\n");
+#define capo printf("\n");
 
 typedef struct {
     unsigned posizione;
-    unsigned somma;
-} papabile;
+    unsigned valore;
+} doppio;
 
 typedef struct {
-    papabile* array;
+    doppio* array;
     unsigned riempimento;
 } migliori;
 
 void print_top(migliori* lista);
-void dijkstra(unsigned *matrix, char* line, int dim, unsigned posizione);
+unsigned dijkstra(unsigned *matrix, char* line, int dim);
 void input_matrix(unsigned *matrix, char* line, int dim);
+void build_heap(doppio* array, unsigned dim, bool MAX);
+void max_heapify(doppio* array, unsigned position, unsigned dim);
+void min_heapify(doppio* array, unsigned position, unsigned dim);
+
 
 
 int main(){
@@ -34,6 +38,10 @@ int main(){
     unsigned grafo[D][D - 1];
     char* aggiungi = "AggiungiGrafo\n", *topk = "TopK\n";
     unsigned i = 0;
+    doppio best[K];
+    migliori heap;
+    heap.array = best;
+    heap.riempimento = 0;
 
     while(fgets(line, MAX_LINE_LEN, stdin) != NULL){
         //printf("%s", line);
@@ -41,18 +49,33 @@ int main(){
         if(strcmp(line, aggiungi) == 0){
             //dijkstra(grafo, line, D, i);
             input_matrix(grafo[0], line, D);
-            for(int j = 0; j< D; j++)
-                for(int k = 0; k< D-1; k++)
-                    printf("%u, ", grafo[j][k]);
-            a_capo
+            //for(int j = 0; j< D; j++)
+            //    for(int k = 0; k< D-1; k++)
+            //        printf("%u, ", grafo[j][k]);
+            //capo
+            
             i ++;
             continue;
         }
         if(strcmp(line, topk) == 0){
             continue;
         }
+        print_top(&heap);
         printf("\terrore\n");
-    }    
+    }
+    //doppio array[25];
+    //for (i = 0; i<25; i++){
+    //    array[i].posizione = i;
+    //    array[i].valore = i+1;
+    //}
+    //migliori boh;
+    //boh.array = array;
+    //boh.riempimento = 25;
+    //print_top(&boh);
+    //build_heap(array, 25, true);
+    //print_top(&boh);
+    //build_heap(array, 25, false);
+    //print_top(&boh);
     return 0;
 }
 
@@ -81,16 +104,73 @@ void input_matrix(unsigned *matrix, char* line, int dim){
 void print_top(migliori* lista){
     unsigned i;
     if (lista->riempimento == 0){
-        printf("\n");
+        capo
         return;
     }
     printf("%u", lista->array->posizione);
 
     for(i = 1; i< lista->riempimento; i++)
         printf(" %u", lista->array[i].posizione);
+    capo
 }
 
-void dijkstra(unsigned *matrix, char* line, int dim, unsigned posizione){
-    //unsigned i;
+void build_heap(doppio* array, unsigned dim, bool MAX){
+    unsigned i;
+    for(i = dim/2; i>0; i--){
+        if(MAX)
+            max_heapify(array, i, dim);
+        else
+            min_heapify(array, i, dim);
+    }
+}
 
+void max_heapify(doppio* array, unsigned position, unsigned dim){
+    unsigned left, right, pos, max;
+    doppio temp;
+    left = 2*position - 1;
+    right = 2*position;
+    pos = position -1;
+    if(left < dim && (!array[pos].valore || array[pos].valore < array[left].valore || (array[pos].valore == array[left].valore && array[pos].posizione > array[left].posizione)))
+        max = left;
+    else
+        max = pos;
+
+    if(right < dim && (!array[max].valore || array[max].valore < array[right].valore || (array[max].valore == array[right].valore && array[max].posizione > array[right].posizione)))
+        max = right;
+    
+    if(max != pos){
+        temp = array[max];
+        array[max] = array[pos];
+        array[pos] = temp;
+        max_heapify(array, max+1, dim);
+    }
+    
+}
+
+void min_heapify(doppio* array, unsigned position, unsigned dim){
+    unsigned left, right, pos, min;
+    doppio temp;
+    left = 2*position - 1;
+    right = 2*position;
+    pos = position -1;
+    if(left < dim && array[left].valore && (!array[pos].valore || array[pos].valore > array[left].valore || (array[pos].valore == array[left].valore && array[pos].posizione > array[left].posizione)))
+        min = left;
+    else
+        min = pos;
+
+    if(right < dim && array[right].valore && (!array[min].valore || array[min].valore > array[right].valore || (array[min].valore == array[right].valore && array[min].posizione > array[right].posizione)))
+        min = right;
+    
+    if(min != pos){
+        temp = array[min];
+        array[min] = array[pos];
+        array[pos] = temp;
+        min_heapify(array, min+1, dim);
+    }
+    
+}
+
+unsigned dijkstra(unsigned *matrix, char* line, int dim){
+    //unsigned i;
+    return 0;
 }
