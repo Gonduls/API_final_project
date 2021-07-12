@@ -54,8 +54,29 @@ int main(){
             print_top(&heap);
             continue;
         }
-        printf("\terrore\n");
+        printf("errore: lettura riga non valida\n");
     }
+
+    //for (i = 0; i<51; i++){
+    //doppio array[51];
+    //    array[i].posizione = i;
+    //    array[i].valore = i;
+    //}
+    //lista_sequenziale boh;
+    //boh.array = array;
+    //boh.riempimento = 51;
+    //print_top(&boh);
+    //build_heap(&boh, true);
+    //print_top(&boh);
+    //build_heap(&boh, false);
+    //print_top(&boh);
+    //build_heap(&boh, true);
+    //print_top(&boh);
+    //build_heap(&boh, false);
+    //print_top(&boh);
+    //build_heap(&boh, true);
+    //print_top(&boh);
+
     return 0;
 }
 
@@ -129,19 +150,21 @@ void max_heapify(lista_sequenziale* lista, unsigned position){
 }
 
 void min_heapify(lista_sequenziale* lista, unsigned position){
-    // sorts by lower valore, if vaolres match then it prefers lower posiziones
+    // sorts by lower valore, leaving 0 at the end
     unsigned left, right, pos, min;
     doppio temp;
     left = 2*position - 1;
     right = 2*position;
     pos = position -1;
-    if(left < lista->riempimento && (lista->array[pos].valore > lista->array[left].valore || (lista->array[pos].valore == lista->array[left].valore && lista->array[pos].posizione > lista->array[left].posizione)))
+    if(left < lista->riempimento && lista->array[left].valore && (!lista->array[pos].valore || lista->array[pos].valore > lista->array[left].valore))
         min = left;
     else
         min = pos;
 
-    if(right < lista->riempimento && (lista->array[min].valore > lista->array[right].valore || (lista->array[min].valore == lista->array[right].valore && lista->array[min].posizione > lista->array[right].posizione)))
+    if(right < lista->riempimento && lista->array[right].valore && (!lista->array[min].valore || lista->array[min].valore > lista->array[right].valore ))
         min = right;
+    
+    //printf("pa: %u, left: %u, right: %u, min: %u\n", lista->array[pos].valore, lista->array[left].valore, lista->array[right].valore, lista->array[min].valore);
     
     if(min != pos){
         temp = lista->array[min];
