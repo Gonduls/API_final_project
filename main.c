@@ -18,7 +18,7 @@ typedef struct {
 } lista_sequenziale;
 
 void print_top(lista_sequenziale* lista);
-unsigned dijkstra(unsigned *matrix, char* line, int dim);
+unsigned dijkstra(unsigned *matrix, int dim);
 void input_matrix(unsigned *matrix, char* line, int dim);
 void build_heap(lista_sequenziale* lista, bool MAX);
 void max_heapify(lista_sequenziale* lista, unsigned position);
@@ -46,7 +46,8 @@ int main(){
     while(fgets(line, MAX_LINE_LEN, stdin) != NULL){
         if(strcmp(line, aggiungi) == 0){
             input_matrix(grafo[0], line, D);
-            //dijkstra(grafo, line, D, i);
+            dijkstra(grafo[0], D - 1);
+
             i ++;
             continue;
         }
@@ -56,26 +57,6 @@ int main(){
         }
         printf("errore: lettura riga non valida\n");
     }
-
-    //for (i = 0; i<51; i++){
-    //doppio array[51];
-    //    array[i].posizione = i;
-    //    array[i].valore = i;
-    //}
-    //lista_sequenziale boh;
-    //boh.array = array;
-    //boh.riempimento = 51;
-    //print_top(&boh);
-    //build_heap(&boh, true);
-    //print_top(&boh);
-    //build_heap(&boh, false);
-    //print_top(&boh);
-    //build_heap(&boh, true);
-    //print_top(&boh);
-    //build_heap(&boh, false);
-    //print_top(&boh);
-    //build_heap(&boh, true);
-    //print_top(&boh);
 
     return 0;
 }
@@ -117,6 +98,9 @@ void print_top(lista_sequenziale* lista){
 
 void build_heap(lista_sequenziale* lista, bool MAX){
     unsigned i;
+    if(lista->riempimento <= 1)
+        return;
+
     for(i = lista->riempimento/2; i>0; i--){
         if(MAX)
             max_heapify(lista, i);
@@ -175,7 +159,49 @@ void min_heapify(lista_sequenziale* lista, unsigned position){
     
 }
 
-unsigned dijkstra(unsigned *matrix, char* line, int dim){
-    //unsigned i;
-    return 0;
+unsigned dijkstra(unsigned *matrix, int dim){
+    unsigned i, j, result, row, new_val;
+    doppio to_add[dim];
+    //unsigned added[dim];
+    lista_sequenziale percorsi;
+
+    for ( i = 0; i < dim; i++){
+        //added[i] = 0;
+        to_add[i].posizione = i;
+        to_add[i].valore = matrix[i];
+        //printf("%u\t", matrix[i]);
+    }
+    percorsi.array = to_add;
+    percorsi.riempimento = dim;
+    
+    build_heap(&percorsi, false);
+
+    result = 0;
+    for (i = 0; i< dim; i++ ){
+        //printf("val = %u\n", to_add[i].valore);
+
+        if(to_add[i].valore == 0){
+            printf("non raggiungibile\n");
+            break;
+        }
+        
+        //added[to_add[i].posizione] = to_add[i].valore;
+        row = (to_add[i].posizione + 1)* dim;   // calcolo valore utile per navigazione matrice
+        percorsi.riempimento --;                // inizializzo parametri per min_heapify
+        percorsi.array = percorsi.array + 1;    // sposto puntatore
+        result += to_add[i].valore;             // aggiungo percorso trovato al risultato
+
+        for (j = 0; j<percorsi.riempimento; j++){
+            new_val = matrix[percorsi.array[j].posizione + row] + to_add[i].valore;
+
+            if(matrix[percorsi.array[j].posizione + row] && (new_val < percorsi.array[j].valore || percorsi.array[j].valore == 0))
+                percorsi.array[j].valore = new_val;
+            
+            //print_top(&percorsi);
+        }
+        build_heap(&percorsi, false);
+    }
+    
+    printf("result = %u\n", result);
+    return result;
 }
