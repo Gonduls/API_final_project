@@ -23,6 +23,7 @@ void input_matrix(unsigned *matrix, char* line, int dim);
 void build_heap(lista_sequenziale* lista, bool MAX);
 void max_heapify(lista_sequenziale* lista, unsigned position);
 void min_heapify(lista_sequenziale* lista, unsigned position);
+void gestisci_top(lista_sequenziale* lista, unsigned new, unsigned position, unsigned dim);
 
 
 
@@ -46,8 +47,8 @@ int main(){
     while(fgets(line, MAX_LINE_LEN, stdin) != NULL){
         if(strcmp(line, aggiungi) == 0){
             input_matrix(grafo[0], line, D);
-            dijkstra(grafo[0], D - 1);
-
+            gestisci_top(&heap, dijkstra(grafo[0], D - 1), i, K);
+            //printf("i=%u\n", i);
             i ++;
             continue;
         }
@@ -116,6 +117,7 @@ void max_heapify(lista_sequenziale* lista, unsigned position){
     left = 2*position - 1;
     right = 2*position;
     pos = position -1;
+
     if(left < lista->riempimento && (lista->array[pos].valore < lista->array[left].valore || (lista->array[pos].valore == lista->array[left].valore && lista->array[pos].posizione < lista->array[left].posizione)))
         max = left;
     else
@@ -181,7 +183,7 @@ unsigned dijkstra(unsigned *matrix, int dim){
         //printf("val = %u\n", to_add[i].valore);
 
         if(to_add[i].valore == 0){
-            printf("non raggiungibile\n");
+            //printf("non raggiungibile\n");
             break;
         }
         
@@ -202,6 +204,25 @@ unsigned dijkstra(unsigned *matrix, int dim){
         build_heap(&percorsi, false);
     }
     
-    printf("result = %u\n", result);
+    //printf("result = %u\n", result);
     return result;
+}
+
+void gestisci_top(lista_sequenziale* lista, unsigned new, unsigned position, unsigned dim){
+    if(lista->riempimento <= dim - 1){
+        lista->array[lista->riempimento].valore = new;
+        lista->array[lista->riempimento].posizione = position;
+        lista->riempimento ++;
+
+        if(lista->riempimento == dim)
+            build_heap(lista, true);
+    
+        return;
+    }
+
+    if(new < lista->array->valore){
+        lista->array->valore = new;
+        lista->array->posizione = position;
+        max_heapify(lista, 1);
+    }
 }
