@@ -4,8 +4,6 @@
 #include <stdbool.h>
 
 #define MAX_NUM_LEN 10
-#define HI printf("hi\n");
-#define capo printf("\n");
 
 typedef struct {
     unsigned posizione;
@@ -87,14 +85,14 @@ void input_matrix(unsigned *matrix, char* line, int dim){
 void print_top(lista_sequenziale* lista){
     unsigned i;
     if (lista->riempimento == 0){
-        capo
+        printf("\n");
         return;
     }
     printf("%u", lista->array->posizione);
 
     for(i = 1; i< lista->riempimento; i++)
         printf(" %u", lista->array[i].posizione);
-    capo
+    printf("\n");
 }
 
 void build_heap(lista_sequenziale* lista, bool MAX){
