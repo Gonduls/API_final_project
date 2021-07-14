@@ -4,6 +4,7 @@
 #include <stdbool.h>
 
 #define MAX_NUM_LEN 10
+#define OUTPUT "output.txt"
 
 typedef struct {
     unsigned posizione;
@@ -41,22 +42,25 @@ int main(){
     lista_sequenziale heap;
     heap.array = best;
     heap.riempimento = 0;
-
+    FILE* output = fopen(OUTPUT, "a");
+    fprintf(output, "da input_1:\n");
     while(fgets(line, MAX_LINE_LEN, stdin) != NULL){
         if(strcmp(line, aggiungi) == 0){
             input_matrix(grafo[0], line, D);
+            fprintf(output, "index=%u, ", i);
             gestisci_top(&heap, dijkstra(grafo[0], D - 1), i, K);
-            //printf("i=%u\n", i);
+            sleep (1);
             i ++;
             continue;
         }
         if(strcmp(line, topk) == 0){
-            print_top(&heap);
             continue;
         }
+            print_top(&heap);
         printf("errore: lettura riga non valida\n");
     }
 
+    fclose(output);
     return 0;
 }
 
@@ -201,8 +205,9 @@ unsigned dijkstra(unsigned *matrix, int dim){
         }
         build_heap(&percorsi, false);
     }
-    
-    //printf("result = %u\n", result);
+    FILE* output = fopen(OUTPUT, "a");
+    fprintf(output, "value=%u\n", result);
+    fclose(output);
     return result;
 }
 
