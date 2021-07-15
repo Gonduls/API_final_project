@@ -17,7 +17,7 @@ typedef struct {
 
 void print_top(lista_sequenziale* lista);
 unsigned dijkstra(unsigned *matrix, int dim);
-void input_matrix(unsigned *matrix, char* line, int dim);
+void input_matrix(unsigned *matrix, int dim);
 void build_heap(lista_sequenziale* lista, bool MAX);
 void max_heapify(lista_sequenziale* lista, unsigned position);
 void min_heapify(lista_sequenziale* lista, unsigned position);
@@ -44,7 +44,7 @@ int main(){
 
     while(fgets(line, MAX_LINE_LEN, stdin) != NULL){
         if(strcmp(line, aggiungi) == 0){
-            input_matrix(grafo[0], line, D);
+            input_matrix(grafo[0], D);
             gestisci_top(&heap, dijkstra(grafo[0], D - 1), i, K);
             //printf("i=%u\n", i);
             i ++;
@@ -60,24 +60,35 @@ int main(){
     return 0;
 }
 
-void input_matrix(unsigned *matrix, char* line, int dim){
+void input_matrix(unsigned *matrix, int dim){
     int i, j, row;
-    unsigned MAX_LINE_LEN = dim*(MAX_NUM_LEN + 1);
-    char *token;
+    unsigned number = 0;
+    char digit;
     for (i= 0; i < dim; i++){
+        // non mi serve il primo numero di ogni riga: è la distanza verso il nodo 0, inutile
+        do
+            digit = getchar_unlocked();
+        while(digit != ',');
 
-        if(fgets(line, MAX_LINE_LEN, stdin) != NULL){
-            token = strtok(line, ","); // non mi serve il primo numero di ogni riga: è la distanza verso il nodo 0, inutile
-            j = 0;
-            row = i*(dim-1);
-            while(token != NULL && j<dim-1){
-                token = strtok(NULL, ",");
-                matrix[row + j] = atoi(token);
+        row = i*(dim-1);
+        j = 0;
+
+        do{
+            digit = getchar_unlocked();
+            if(digit == ','){
+                matrix[row + j] = number;
                 j++;
+                number = 0;
+                continue;
             }
-        }
-        else
-            printf("errore 2\n");
+            if(digit >= '0' && digit <= '9')
+                number = number * 10 + (unsigned) (digit - '0');
+
+        }    
+        while(digit != '\n');
+        matrix[row + j] = number;
+        number = 0;
+
     }
 }
 
