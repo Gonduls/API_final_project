@@ -2,3 +2,4 @@ to_ignore/*
 Open.exe
 try.exe
 new/*
+*.zip
